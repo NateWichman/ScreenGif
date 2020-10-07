@@ -1,0 +1,25 @@
+<div class="d-flex d-col a-center">
+    <h1>Screen to Gif 🦐</h1>
+    <div style="width: 1280px" class="d-flex j-between">
+        <select
+            style="width: 150px"
+            (ngModelChange)="selectSource()"
+            [(ngModel)]="selectedSource"
+        >
+            <option *ngFor="let source of sources" [ngValue]="source">
+                {{ source.name }}
+            </option>
+        </select>
+        <button (click)="toggleRecording()" class="btn">
+            {{ isRecording ? 'stop' : 'start' }}
+        </button>
+    </div>
+    <video class="mt-1" style="width: 1280px" #vid></video>
+</div>
+<canvas
+    class="hidden-canvas"
+    #canv
+    width="1280px"
+    height="720px"
+    style="background-color: red"
+></canvas>

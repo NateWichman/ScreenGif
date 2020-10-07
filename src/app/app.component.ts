@@ -1,16 +1,4 @@
-import {
-    OnInit,
-    Component,
-    ViewChild,
-    ElementRef,
-    AfterViewInit
-} from '@angular/core';
-import { DesktopCapturerSource } from 'electron';
-import { ElectronService } from 'ngx-electron';
-import { grayScale } from './helpers/image-filters';
-
-declare var MediaRecorder: any;
-declare var Blob: any;
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -18,101 +6,16 @@ declare var Blob: any;
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-    @ViewChild('vid') videoEl: ElementRef;
-    @ViewChild('canv') canvasEl: ElementRef;
-    title = 'ScreenGif';
-    sources: DesktopCapturerSource[] = [];
-    selectedSource: DesktopCapturerSource;
-    isRecording = false;
-    private mediaRecorder: any;
-    private recordedChunks = [];
-    private i; // interval
+    record: Blob;
+    showRecord = false;
 
-    constructor(private eS: ElectronService) {}
-
+    constructor(private cd: ChangeDetectorRef) { }
 
     ngOnInit() {
-        this.fetchSources();
     }
 
-    toggleRecording() {
-        if (this.isRecording) {
-            this.mediaRecorder.stop();
-        } else {
-            this.startCanvasDisplay();
-            this.recordedChunks = [];
-            const mimeOpts = { mimeType: 'video/webm; codecs=vp9' };
-            const stream = this.canvasEl.nativeElement.captureStream(30);
-            this.mediaRecorder = new MediaRecorder(stream, mimeOpts);
-
-            this.mediaRecorder.ondataavailable = (e) => {
-                this.recordedChunks.push(e.data);
-            };
-            this.mediaRecorder.onstop = (e) => this.handleStop(e);
-            this.mediaRecorder.start();
-        }
-        this.isRecording = !this.isRecording;
-    }
-
-    private async handleStop(e: any) {
-        this.endCanvasDisplay();
-        const blob = new Blob(this.recordedChunks, {
-            type: 'video/webm; codecs=vp9'
-        });
-        const buffer = Buffer.from(await blob.arrayBuffer());
-
-        this.eS.ipcRenderer.send('saveFile', buffer);
-    }
-
-    private startCanvasDisplay() {
-        const v = this.videoEl.nativeElement;
-        const ctx = this.canvasEl.nativeElement.getContext('2d');
-        const width = v.clientWidth;
-        const height = v.clientHeight;
-        this.i = setInterval(() => {
-            ctx.drawImage(v, 0, 0, width, height);
-            grayScale(ctx, this.canvasEl.nativeElement);
-        }, 20);
-    }
-
-    private endCanvasDisplay() {
-        clearInterval(this.i);
-    }
-
-
-    /** Shows all available sources for screen recording. */
-    private async fetchSources() {
-        const inputSources = await this.eS.desktopCapturer.getSources({
-            types: ['window', 'screen']
-        });
-        this.sources = inputSources;
-        if (this.sources.length > 0) {
-            this.selectedSource = this.sources[0];
-            this.selectSource();
-        }
-    }
-
-    async selectSource() {
-        this.videoEl.nativeElement.innerText = this.selectedSource.name;
-
-        const options = {
-            audio: false,
-            video: {
-                mandatory: {
-                    chromeMediaSource: 'desktop',
-                    chromeMediaSourceId: this.selectedSource.id,
-                    minWidth: 1280,
-                    maxWidth: 1280,
-                    minHeight: 720,
-                    maxHeight: 720
-                }
-            }
-        };
-        const stream = await (navigator.mediaDevices as any).getUserMedia(
-            options
-        );
-
-        this.videoEl.nativeElement.srcObject = stream;
-        this.videoEl.nativeElement.play();
+    onRecorded(blob: Blob) {
+        this.record = blob;
+        this.cd.detectChanges();
     }
 }
