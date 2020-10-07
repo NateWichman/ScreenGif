@@ -2,3 +2,9 @@
 video {
     border: 2px solid white;
 }
+
+.hidden-canvas {
+    position: absolute;
+    top: 0;
+    visibility: hidden;
+}

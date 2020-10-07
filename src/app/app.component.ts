@@ -1,6 +1,13 @@
-import { OnInit, Component, ViewChild, ElementRef } from '@angular/core';
+import {
+    OnInit,
+    Component,
+    ViewChild,
+    ElementRef,
+    AfterViewInit
+} from '@angular/core';
 import { DesktopCapturerSource } from 'electron';
 import { ElectronService } from 'ngx-electron';
+import { grayScale } from './helpers/image-filters';
 
 declare var MediaRecorder: any;
 declare var Blob: any;
@@ -12,14 +19,17 @@ declare var Blob: any;
 })
 export class AppComponent implements OnInit {
     @ViewChild('vid') videoEl: ElementRef;
+    @ViewChild('canv') canvasEl: ElementRef;
     title = 'ScreenGif';
     sources: DesktopCapturerSource[] = [];
     selectedSource: DesktopCapturerSource;
     isRecording = false;
     private mediaRecorder: any;
     private recordedChunks = [];
+    private i; // interval
 
     constructor(private eS: ElectronService) {}
+
 
     ngOnInit() {
         this.fetchSources();
@@ -29,10 +39,46 @@ export class AppComponent implements OnInit {
         if (this.isRecording) {
             this.mediaRecorder.stop();
         } else {
+            this.startCanvasDisplay();
+            this.recordedChunks = [];
+            const mimeOpts = { mimeType: 'video/webm; codecs=vp9' };
+            const stream = this.canvasEl.nativeElement.captureStream(30);
+            this.mediaRecorder = new MediaRecorder(stream, mimeOpts);
+
+            this.mediaRecorder.ondataavailable = (e) => {
+                this.recordedChunks.push(e.data);
+            };
+            this.mediaRecorder.onstop = (e) => this.handleStop(e);
             this.mediaRecorder.start();
         }
         this.isRecording = !this.isRecording;
     }
+
+    private async handleStop(e: any) {
+        this.endCanvasDisplay();
+        const blob = new Blob(this.recordedChunks, {
+            type: 'video/webm; codecs=vp9'
+        });
+        const buffer = Buffer.from(await blob.arrayBuffer());
+
+        this.eS.ipcRenderer.send('saveFile', buffer);
+    }
+
+    private startCanvasDisplay() {
+        const v = this.videoEl.nativeElement;
+        const ctx = this.canvasEl.nativeElement.getContext('2d');
+        const width = v.clientWidth;
+        const height = v.clientHeight;
+        this.i = setInterval(() => {
+            ctx.drawImage(v, 0, 0, width, height);
+            grayScale(ctx, this.canvasEl.nativeElement);
+        }, 20);
+    }
+
+    private endCanvasDisplay() {
+        clearInterval(this.i);
+    }
+
 
     /** Shows all available sources for screen recording. */
     private async fetchSources() {
@@ -68,33 +114,5 @@ export class AppComponent implements OnInit {
 
         this.videoEl.nativeElement.srcObject = stream;
         this.videoEl.nativeElement.play();
-
-        const mimeOpts = { mimeType: 'video/webm; codecs=vp9' };
-        this.mediaRecorder = new MediaRecorder(stream, mimeOpts);
-
-        this.mediaRecorder.ondataavailable = (e) => {
-            this.recordedChunks.push(e.data);
-        };
-        this.mediaRecorder.onstop = (e) => this.handleStop(e);
-    }
-
-    private async handleStop(e: any) {
-        const blob = new Blob(this.recordedChunks, {
-            type: 'video/webm; codecs=vp9'
-        });
-        const buffer = Buffer.from(await blob.arrayBuffer());
-        console.log('trying to save buffer', buffer);
-
-        this.eS.ipcRenderer.send('saveFile', buffer);
-        /* const { filePath } = await this.eS.remote.dialog.showSaveDialog({
-            buttonLabel: 'Save Video',
-            defaultPath: `vid-${Date.now()}.webm`
-        }); */
-
-        /* if (filePath) {
-           writeFile(filePath, buffer, () => console.log('video saved successfully!'));
-        } else {
-            console.log('error saving video');
-        } */
     }
 }
