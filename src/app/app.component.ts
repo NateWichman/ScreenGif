@@ -1,10 +1,100 @@
-import { Component } from '@angular/core';
+import { OnInit, Component, ViewChild, ElementRef } from '@angular/core';
+import { DesktopCapturerSource } from 'electron';
+import { ElectronService } from 'ngx-electron';
+
+declare var MediaRecorder: any;
+declare var Blob: any;
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'ScreenGif';
+export class AppComponent implements OnInit {
+    @ViewChild('vid') videoEl: ElementRef;
+    title = 'ScreenGif';
+    sources: DesktopCapturerSource[] = [];
+    selectedSource: DesktopCapturerSource;
+    isRecording = false;
+    private mediaRecorder: any;
+    private recordedChunks = [];
+
+    constructor(private eS: ElectronService) {}
+
+    ngOnInit() {
+        this.fetchSources();
+    }
+
+    toggleRecording() {
+        if (this.isRecording) {
+            this.mediaRecorder.stop();
+        } else {
+            this.mediaRecorder.start();
+        }
+        this.isRecording = !this.isRecording;
+    }
+
+    /** Shows all available sources for screen recording. */
+    private async fetchSources() {
+        const inputSources = await this.eS.desktopCapturer.getSources({
+            types: ['window', 'screen']
+        });
+        this.sources = inputSources;
+        if (this.sources.length > 0) {
+            this.selectedSource = this.sources[0];
+            this.selectSource();
+        }
+    }
+
+    async selectSource() {
+        this.videoEl.nativeElement.innerText = this.selectedSource.name;
+
+        const options = {
+            audio: false,
+            video: {
+                mandatory: {
+                    chromeMediaSource: 'desktop',
+                    chromeMediaSourceId: this.selectedSource.id,
+                    minWidth: 1280,
+                    maxWidth: 1280,
+                    minHeight: 720,
+                    maxHeight: 720
+                }
+            }
+        };
+        const stream = await (navigator.mediaDevices as any).getUserMedia(
+            options
+        );
+
+        this.videoEl.nativeElement.srcObject = stream;
+        this.videoEl.nativeElement.play();
+
+        const mimeOpts = { mimeType: 'video/webm; codecs=vp9' };
+        this.mediaRecorder = new MediaRecorder(stream, mimeOpts);
+
+        this.mediaRecorder.ondataavailable = (e) => {
+            this.recordedChunks.push(e.data);
+        };
+        this.mediaRecorder.onstop = (e) => this.handleStop(e);
+    }
+
+    private async handleStop(e: any) {
+        const blob = new Blob(this.recordedChunks, {
+            type: 'video/webm; codecs=vp9'
+        });
+        const buffer = Buffer.from(await blob.arrayBuffer());
+        console.log('trying to save buffer', buffer);
+
+        this.eS.ipcRenderer.send('saveFile', buffer);
+        /* const { filePath } = await this.eS.remote.dialog.showSaveDialog({
+            buttonLabel: 'Save Video',
+            defaultPath: `vid-${Date.now()}.webm`
+        }); */
+
+        /* if (filePath) {
+           writeFile(filePath, buffer, () => console.log('video saved successfully!'));
+        } else {
+            console.log('error saving video');
+        } */
+    }
 }

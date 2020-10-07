@@ -1,1 +1,59 @@
 /* You can add global styles to this file, and also import other style files */
+@import "./styles/variables";
+
+body {
+    background-color: $black;
+    color: $white;
+}
+
+.d-flex {
+    display: flex;
+
+    &.d-col {
+        flex-direction: column;
+    }
+
+    &.j-center {
+        justify-content: center;
+    }
+    &.j-around {
+        justify-content: space-around;
+    }
+    &.j-between {
+        justify-content: space-between;
+    }
+    &.j-end {
+        justify-content: flex-end;
+    }
+
+    &.a-center {
+        align-items: center;
+    }
+    &.a-end {
+        align-items: flex-end;
+    }
+}
+
+.mt-1 {
+    margin-top: 10px;
+}
+
+.btn {
+  border: unset;
+  border-radius: 0 20px 0 20px;
+  background-color: $secondary;
+  color: white;
+  padding: 5px 10px 5px 10px;
+  cursor: pointer;
+  font-size: 20px;
+
+  &:hover {
+      background-color: $primary;
+  }
+
+  &:focus {
+      outline: none;
+  }
+}
+
+
