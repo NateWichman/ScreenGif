@@ -1,1 +1,2 @@
 <app-recorder *ngIf="!record" (recordingEmitter)="onRecorded($event)"></app-recorder>
+<app-editor *ngIf="record" [record]="record"></app-editor>
