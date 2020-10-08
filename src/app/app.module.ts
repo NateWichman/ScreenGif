@@ -7,12 +7,16 @@ import { NgxElectronModule } from 'ngx-electron';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecorderComponent } from './recorder/recorder.component';
 import { EditorComponent } from './editor/editor.component';
+import { OverlayComponent } from './overlay/overlay.component';
+import { TesterComponent } from './tester/tester.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RecorderComponent,
-    EditorComponent
+    EditorComponent,
+    OverlayComponent,
+    TesterComponent
   ],
   imports: [
     BrowserModule,

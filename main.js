@@ -31,6 +31,25 @@ function createWindow () {
   })
 }
 
+ipc.on('openOverlay', (event) => {
+  const overlayWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  overlayWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, `/dist/ScreenGif/index.html`),
+      hash: '/overlay',
+      protocol: "file:",
+      slashes: true
+    })
+  );
+  overlayWindow.show();
+})
+
 app.on('ready', createWindow)
 
 app.on('window-all-closed', function () {
