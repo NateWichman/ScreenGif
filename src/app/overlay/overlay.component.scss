@@ -1,0 +1,17 @@
+@import "../../styles/variables";
+
+.overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba($warn, 0.3);
+    cursor: crosshair;
+}
+
+
+.selection-box {
+    border: 5px solid $primary;
+    position: absolute;
+}

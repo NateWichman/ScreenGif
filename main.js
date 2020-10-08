@@ -31,14 +31,21 @@ function createWindow () {
   })
 }
 
+let overlayWindow;
 ipc.on('openOverlay', (event) => {
-  const overlayWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+  overlayWindow = new BrowserWindow({
+    fullscreen: true,
+    movable: false,
+    transparent: true,
+    frame: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: true
     }
   })
+
+  overlayWindow.setAlwaysOnTop(true, 'pop-up-menu');
+
   overlayWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, `/dist/ScreenGif/index.html`),
@@ -48,7 +55,15 @@ ipc.on('openOverlay', (event) => {
     })
   );
   overlayWindow.show();
+});
+ipc.on('cancelOverlay', (event) => {
+  overlayWindow.close();
 })
+
+ipc.on('selectOverlay', (event, clipPercents) => {
+  mainWindow.webContents.send('clip', clipPercents);
+});
+
 
 app.on('ready', createWindow)
 

@@ -1,3 +1,31 @@
-<p>
-  overlay works!
-</p>
+<div
+    class="overlay"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="isDragging = false"
+>
+   <div style="position: absolute; top: 10px; left: 10px;">{{ offset ? offset.width + ' ' + offset.height : 'none' }}</div>
+    <button
+        *ngIf="this.offset"
+        class="btn"
+        style="
+            position: absolute;
+            right: 50%;
+            transform: translateX(50%);
+            width: 100px;
+            z-index: 2;
+        "
+        (click)="$event.stopPropagation(); select();"
+    >
+        Select
+    </button>
+    <button
+        style="position: absolute; right: 10px; top: 10px; z-index: 2"
+        class="btn"
+        (click)="$event.stopPropagation(); cancel();"
+    >
+        cancel
+    </button>
+    <div class="selection-box" [ngStyle]="selectionBoxStyle()"></div>
+</div>
