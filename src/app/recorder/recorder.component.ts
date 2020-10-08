@@ -3,7 +3,7 @@ import {
     Component,
     ViewChild,
     ElementRef,
-    Output, EventEmitter
+    Output, EventEmitter, ChangeDetectorRef
 } from '@angular/core';
 import { DesktopCapturerSource } from 'electron';
 import { ElectronService } from 'ngx-electron';
@@ -27,11 +27,33 @@ export class RecorderComponent implements OnInit {
     private mediaRecorder: any;
     private recordedChunks = [];
     private i; // interval
+    offset: {
+        x: number,
+        y: number,
+        height: number,
+        width: number,
+        totalHeight: number,
+        totalWidth: number
+    };
 
-    constructor(private eS: ElectronService) {}
+    canvas: {
+        height: number;
+        width: number;
+    }
+
+    constructor(private eS: ElectronService, private cd: ChangeDetectorRef) {}
 
     ngOnInit() {
         this.fetchSources();
+        this.eS.ipcRenderer.on('clip', (event, clip) => {
+            console.log('clip received');
+            this.offset = clip;
+            this.canvas = {
+                height: clip.height * 720,
+                width: clip.width * 1280
+            }
+            this.cd.detectChanges();
+          });
     }
 
     toggleRecording() {
@@ -69,7 +91,7 @@ export class RecorderComponent implements OnInit {
         const width = v.clientWidth;
         const height = v.clientHeight;
         this.i = setInterval(() => {
-            ctx.drawImage(v, 0, 0, width, height);
+            ctx.drawImage(v, -1 * (this.offset.x * 1280), -1 * (this.offset.y * 720), width, height);
             grayScale(ctx, this.canvasEl.nativeElement);
         }, 20);
     }

@@ -14,9 +14,6 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         document.body.className += ' dark-background';
-        this.eS.ipcRenderer.on('clip', (event, args) => {
-          console.log('CLIPPED', event, args)
-        })
     }
 
     onRecorded(blob: Blob) {
