@@ -3,7 +3,9 @@ import {
     Component,
     ViewChild,
     ElementRef,
-    Output, EventEmitter, ChangeDetectorRef
+    Output,
+    EventEmitter,
+    ChangeDetectorRef
 } from '@angular/core';
 import { DesktopCapturerSource } from 'electron';
 import { ElectronService } from 'ngx-electron';
@@ -21,6 +23,11 @@ export class RecorderComponent implements OnInit {
     @Output() recordingEmitter = new EventEmitter<Blob>();
     @ViewChild('vid') videoEl: ElementRef;
     @ViewChild('canv') canvasEl: ElementRef;
+
+    resolution = {
+        width: 1280,
+        height: 720
+    };
     sources: DesktopCapturerSource[] = [];
     selectedSource: DesktopCapturerSource;
     isRecording = false;
@@ -28,32 +35,33 @@ export class RecorderComponent implements OnInit {
     private recordedChunks = [];
     private i; // interval
     offset: {
-        x: number,
-        y: number,
-        height: number,
-        width: number,
-        totalHeight: number,
-        totalWidth: number
+        x: number;
+        y: number;
+        height: number;
+        width: number;
+        totalHeight: number;
+        totalWidth: number;
     };
 
     canvas: {
         height: number;
         width: number;
-    }
+    };
 
     constructor(private eS: ElectronService, private cd: ChangeDetectorRef) {}
 
     ngOnInit() {
         this.fetchSources();
+        const { height, width } = this.resolution;
         this.eS.ipcRenderer.on('clip', (event, clip) => {
             console.log('clip received');
             this.offset = clip;
             this.canvas = {
-                height: clip.height * 720,
-                width: clip.width * 1280
-            }
+                height: clip.height * height,
+                width: clip.width * width
+            };
             this.cd.detectChanges();
-          });
+        });
     }
 
     toggleRecording() {
@@ -91,7 +99,13 @@ export class RecorderComponent implements OnInit {
         const width = v.clientWidth;
         const height = v.clientHeight;
         this.i = setInterval(() => {
-            ctx.drawImage(v, -1 * (this.offset.x * 1280), -1 * (this.offset.y * 720), width, height);
+            ctx.drawImage(
+                v,
+                -1 * (this.offset.x * this.resolution.width),
+                -1 * (this.offset.y * this.resolution.height),
+                width,
+                height
+            );
             grayScale(ctx, this.canvasEl.nativeElement);
         }, 20);
     }
@@ -115,16 +129,17 @@ export class RecorderComponent implements OnInit {
     async selectSource() {
         this.videoEl.nativeElement.innerText = this.selectedSource.name;
 
+        const { height, width } = this.resolution;
         const options = {
             audio: false,
             video: {
                 mandatory: {
                     chromeMediaSource: 'desktop',
                     chromeMediaSourceId: this.selectedSource.id,
-                    minWidth: 1280,
-                    maxWidth: 1280,
-                    minHeight: 720,
-                    maxHeight: 720
+                    minWidth: width,
+                    maxWidth: width,
+                    minHeight: height,
+                    maxHeight: height
                 }
             }
         };
