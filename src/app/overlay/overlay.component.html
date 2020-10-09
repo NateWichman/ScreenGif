@@ -9,22 +9,14 @@
     <ng-container *ngIf="!isClickThrough">
         <button
             *ngIf="offset && !isDragging"
-            class="btn accent"
-            style="
-                position: absolute;
-                right: 50%;
-                transform: translateX(50%);
-                width: 100px;
-                z-index: 2;
-            "
+            class="btn accent select-btn"
             (click)="select()"
             (mousedown)="$event.stopPropagation()"
         >
             Select
         </button>
         <button
-            style="position: absolute; right: 10px; top: 10px; z-index: 2"
-            class="btn error"
+            class="btn error cancel-btn"
             (click)="cancel()"
             (mousedown)="$event.stopPropagation()"
         >

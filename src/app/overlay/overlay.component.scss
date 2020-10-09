@@ -27,3 +27,17 @@
     }
 }
 
+.select-btn {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+    width: 100px;
+    z-index: 2;
+}
+
+.cancel-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    z-index: 2;
+}
