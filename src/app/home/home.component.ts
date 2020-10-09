@@ -20,8 +20,4 @@ export class HomeComponent implements OnInit {
         this.record = blob;
         this.cd.detectChanges();
     }
-
-    openOverlay() {
-        this.eS.ipcRenderer.send('openOverlay');
-    }
 }

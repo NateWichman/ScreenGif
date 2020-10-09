@@ -1,6 +1,6 @@
 <div class="d-flex d-col a-center">
     <h1>Screen to Gif 🦐</h1>
-    <div style="width: 1280px" class="d-flex j-between">
+    <div class="d-flex j-between">
         <select
             style="width: 150px"
             (ngModelChange)="selectSource()"
@@ -10,16 +10,30 @@
                 {{ source.name }}
             </option>
         </select>
-        <button (click)="toggleRecording()" class="btn">
+
+        <button *ngIf="offset" (click)="toggleRecording()" class="btn">
             {{ isRecording ? 'stop' : 'start' }}
         </button>
+
+        <button class="btn" (click)="openOverlay()">Select Area</button>
     </div>
-    <video class="mt-1" style="width: 1280px" #vid></video>
+
+    <h2>Preview</h2>
+    <div class="preview">
+    <video
+        *ngIf="!canvas"
+        class="mt-1"
+        style="width: 700px"
+        #previewVideo
+    ></video>
+    <canvas
+        *ngIf="canvas"
+        #canv
+        [attr.width]="canvas.width"
+        [attr.height]="canvas.height"
+    ></canvas>
+    </div>  
 </div>
-<canvas
-    *ngIf="canvas"
-    #canv
-    [attr.width]="canvas.width"
-    [attr.height]="canvas.height"
-    style="background-color: red"
-></canvas>
+<div style="width: 1px; height: 1px; overflow: hidden">
+    <video class="mt-1 hidden" style="width: 1280px" #vid></video>
+</div>

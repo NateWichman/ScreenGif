@@ -23,6 +23,7 @@ export class RecorderComponent implements OnInit {
     @Output() recordingEmitter = new EventEmitter<Blob>();
     @ViewChild('vid') videoEl: ElementRef;
     @ViewChild('canv') canvasEl: ElementRef;
+    @ViewChild('previewVideo') previewVideoEl: ElementRef;
 
     resolution = {
         width: 1280,
@@ -31,6 +32,7 @@ export class RecorderComponent implements OnInit {
     sources: DesktopCapturerSource[] = [];
     selectedSource: DesktopCapturerSource;
     isRecording = false;
+    isOverlaying = false;
     private mediaRecorder: any;
     private recordedChunks = [];
     private i; // interval
@@ -64,6 +66,11 @@ export class RecorderComponent implements OnInit {
         });
     }
 
+    openOverlay() {
+        this.isOverlaying = true;
+        this.eS.ipcRenderer.send('openOverlay');
+    }
+
     toggleRecording() {
         if (this.isRecording) {
             this.mediaRecorder.stop();
@@ -81,6 +88,7 @@ export class RecorderComponent implements OnInit {
             this.mediaRecorder.start();
         }
         this.isRecording = !this.isRecording;
+        this.cd.detectChanges();
     }
 
     private async handleStop(e: any) {
@@ -106,7 +114,7 @@ export class RecorderComponent implements OnInit {
                 width,
                 height
             );
-            grayScale(ctx, this.canvasEl.nativeElement);
+            // grayScale(ctx, this.canvasEl.nativeElement);
         }, 20);
     }
 
@@ -149,5 +157,8 @@ export class RecorderComponent implements OnInit {
 
         this.videoEl.nativeElement.srcObject = stream;
         this.videoEl.nativeElement.play();
+
+        this.previewVideoEl.nativeElement.srcObject = stream;
+        this.previewVideoEl.nativeElement.play();
     }
 }

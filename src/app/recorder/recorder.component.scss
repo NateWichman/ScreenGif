@@ -1,8 +1,10 @@
-video {
-    border: 2px solid white;
+@import "../../styles/variables";
+
+.preview {
+    border: 2px solid $secondary;
 }
 
-.hidden-canvas {
+.hidden {
     position: absolute;
     top: 0;
     visibility: hidden;

@@ -1,5 +1,16 @@
 <div class="d-flex d-col a-center">
-  <button (click)="save()" class="btn">Save</button>
-  <div *ngIf="videoUrl">hello world</div>
-  <video #vid loop style="width: 1280px"></video>
+    <div style="display: inline-block">
+        <div class="d-flex a-center j-between mt-1" style="width: 500px;">
+            <button (click)="save()" class="btn accent">Save</button>
+            <label class="container">video
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+            </label>
+            <label class="container">gif
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        <video #vid loop></video>
+    </div>
 </div>
