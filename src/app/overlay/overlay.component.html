@@ -1,6 +1,6 @@
 <div
     class="overlay"
-    [ngClass]="{ selecting: !isClickThrough }"
+    [ngClass]="{ selecting: !isClickThrough,  color: !this.offset}"
     (mousedown)="onMouseDown($event)"
     (mousemove)="onMouseMove($event)"
     (mouseup)="onMouseUp($event)"
@@ -8,7 +8,7 @@
 >
     <ng-container *ngIf="!isClickThrough">
         <button
-            *ngIf="this.offset && !isDragging"
+            *ngIf="offset && !isDragging"
             class="btn accent"
             style="
                 position: absolute;
@@ -32,6 +32,7 @@
         </button>
     </ng-container>
     <div
+        *ngIf="offset"
         class="selection-box"
         [ngClass]="{ 'click-through': isClickThrough }"
         [ngStyle]="selectionBoxStyle()"

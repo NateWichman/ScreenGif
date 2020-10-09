@@ -76,7 +76,7 @@ export class OverlayComponent implements OnInit {
             top: this.offset.y + 'px',
             left: this.offset.x + 'px',
             width: this.offset.width + 'px',
-            height: this.offset.height + 'px'
+            height: this.offset.height + 'px',
         };
     }
 }

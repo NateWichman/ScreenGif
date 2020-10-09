@@ -9,15 +9,21 @@
 }
 
 .selecting {
-    outline: rgba($warn, 0.3);
     cursor: crosshair;
+}
+
+.color {
+    background-color: rgba($warn, 0.3);
 }
 
 .selection-box {
     outline: 5px dashed $black;
     position: absolute;
+    box-shadow: 0 0 0 9999px rgba($warn, 0.3);
 
     &.click-through {
         outline: 5px dashed $primary;
+        box-shadow: unset;
     }
 }
+
