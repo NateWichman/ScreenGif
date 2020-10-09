@@ -30,6 +30,7 @@ export class OverlayComponent implements OnInit {
           height: this.offset.height / window.innerHeight,
           width: this.offset.width / window.innerWidth
         });
+        this.eS.ipcRenderer.send('recordOverlay');
         this.eS.ipcRenderer.send('cancelOverlay');
     }
 

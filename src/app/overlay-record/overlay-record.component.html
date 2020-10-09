@@ -1,0 +1,10 @@
+<div class="record d-flex j-center a-center">
+        <button
+            style="width: 70%; height: 70%"
+            (click)="toggleRecord()"
+            class="btn"
+            [ngClass]="isRecording ? 'accent' : 'error'"
+        >
+            {{ isRecording ? 'complete' : 'record' }}
+        </button>
+</div>

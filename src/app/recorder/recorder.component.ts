@@ -64,6 +64,14 @@ export class RecorderComponent implements OnInit {
             };
             this.cd.detectChanges();
         });
+
+        this.eS.ipcRenderer.on('startRecording', (event) => {
+            this.toggleRecording();
+        });
+
+        this.eS.ipcRenderer.on('stopRecording', (event) => {
+            this.toggleRecording();
+        });
     }
 
     openOverlay() {

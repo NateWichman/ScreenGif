@@ -1,0 +1,12 @@
+@import "../../styles/variables";
+
+.record {
+    background-color: rgba($accent, 0.3);
+    border-bottom-left-radius: 30px;
+    width: 100px;
+    height: 50px;
+
+    button {
+        font-size: 13px !important;
+    }
+}

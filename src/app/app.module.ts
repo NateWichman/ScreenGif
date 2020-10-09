@@ -10,6 +10,7 @@ import { EditorComponent } from './editor/editor.component';
 import { OverlayComponent } from './overlay/overlay.component';
 import { TesterComponent } from './tester/tester.component';
 import { HomeComponent } from './home/home.component';
+import { OverlayRecordComponent } from './overlay-record/overlay-record.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { HomeComponent } from './home/home.component';
     EditorComponent,
     OverlayComponent,
     TesterComponent,
-    HomeComponent
+    HomeComponent,
+    OverlayRecordComponent
   ],
   imports: [
     BrowserModule,

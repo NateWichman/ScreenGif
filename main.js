@@ -39,7 +39,7 @@ app.on('activate', function () {
     if (mainWindow === null) createWindow();
 });
 
-/** OVERLAY */
+/** Select Overlay ***********************************************************************************/
 let overlayWindow;
 ipc.on('openOverlay', (event) => {
     console.log('overlay opened');
@@ -75,6 +75,45 @@ ipc.on('selectOverlay', (event, clipPercents) => {
     mainWindow.webContents.send('clip', clipPercents);
 });
 
+/** Record Overlay ********************************************************************************/
+let recordOverlayWindow;
+ipc.on('recordOverlay', (event) => {
+    recordOverlayWindow = new BrowserWindow({
+        width: 100,
+        height: 50,
+        movable: false,
+        transparent: true,
+        frame: false,
+        resizable: false,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    })
+    overlayWindow.setAlwaysOnTop(true, 'pop-up-menu');
+    /* TODO: If allowing more than one screen, must change */
+    const bounds = electron.screen.getPrimaryDisplay().bounds;
+    recordOverlayWindow.setPosition(bounds.x + bounds.width - 100, bounds.y);
+    recordOverlayWindow.loadURL(
+        url.format({
+            pathname: path.join(__dirname, `/dist/ScreenGif/index.html`),
+            hash: '/overlay-record',
+            protocol: 'file:',
+            slashes: true
+        })
+    );
+    recordOverlayWindow.show();
+});
+
+ipc.on('startRecording', (event) => {
+    mainWindow.webContents.send('startRecording');
+});
+
+ipc.on('endRecording', (event) => {
+    mainWindow.webContents.send('stopRecording');
+    recordOverlayWindow.close();
+})
+
+/** GIF & Video LOGIC ********************************************************************************* */
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('ffmpeg-static').replace(
     'app.asar',
@@ -104,4 +143,3 @@ ipc.on('saveFile', async function (event, blob) {
     }
 });
 
-/** GIF conversion */
