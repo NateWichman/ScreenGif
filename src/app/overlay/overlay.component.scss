@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@import '../../styles/variables';
 
 .overlay {
     position: absolute;
@@ -6,12 +6,18 @@
     right: 0;
     left: 0;
     bottom: 0;
-    background-color: rgba($warn, 0.3);
+}
+
+.selecting {
+    outline: rgba($warn, 0.3);
     cursor: crosshair;
 }
 
-
 .selection-box {
-    border: 5px solid $primary;
+    outline: 5px dashed $black;
     position: absolute;
+
+    &.click-through {
+        outline: 5px dashed $primary;
+    }
 }

@@ -14,6 +14,7 @@ export class OverlayComponent implements OnInit {
         height: number;
     };
     isDragging = false;
+    isClickThrough = false;
 
     constructor(private eS: ElectronService) {}
 
@@ -24,17 +25,23 @@ export class OverlayComponent implements OnInit {
     }
 
     select() {
+        if (this.isClickThrough) {
+            return;
+        }
+        this.isClickThrough = true;
         this.eS.ipcRenderer.send('selectOverlay', {
-          x: this.offset.x / window.innerWidth,
-          y: this.offset.y / window.innerHeight,
-          height: this.offset.height / window.innerHeight,
-          width: this.offset.width / window.innerWidth
+            x: this.offset.x / window.innerWidth,
+            y: this.offset.y / window.innerHeight,
+            height: this.offset.height / window.innerHeight,
+            width: this.offset.width / window.innerWidth
         });
         this.eS.ipcRenderer.send('recordOverlay');
-        this.eS.ipcRenderer.send('cancelOverlay');
     }
 
     onMouseDown(event: MouseEvent) {
+        if (this.isClickThrough) {
+            return;
+        }
         this.isDragging = true;
         this.offset = {
             x: event.clientX,
@@ -45,6 +52,9 @@ export class OverlayComponent implements OnInit {
     }
 
     onMouseMove(event: MouseEvent) {
+        if (this.isClickThrough) {
+            return;
+        }
         if (this.isDragging) {
             this.offset.width = event.clientX - this.offset.x;
             this.offset.height = event.clientY - this.offset.y;
@@ -52,6 +62,9 @@ export class OverlayComponent implements OnInit {
     }
 
     onMouseUp(event: MouseEvent) {
+        if (this.isClickThrough) {
+            return;
+        }
         this.isDragging = false;
     }
 

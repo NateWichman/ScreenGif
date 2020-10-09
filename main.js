@@ -72,6 +72,7 @@ ipc.on('cancelOverlay', (event) => {
 });
 
 ipc.on('selectOverlay', (event, clipPercents) => {
+    overlayWindow.setIgnoreMouseEvents(true);
     mainWindow.webContents.send('clip', clipPercents);
 });
 
@@ -111,6 +112,7 @@ ipc.on('startRecording', (event) => {
 ipc.on('endRecording', (event) => {
     mainWindow.webContents.send('stopRecording');
     recordOverlayWindow.close();
+    overlayWindow.close();
 })
 
 /** GIF & Video LOGIC ********************************************************************************* */
