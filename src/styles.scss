@@ -1,11 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
-@import "./styles/variables";
+@import './styles/variables';
 
 body {
     color: $white;
 }
 
-html, body { padding: 0; margin: 0;} 
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
 
 .d-flex {
     display: flex;
@@ -39,25 +43,77 @@ html, body { padding: 0; margin: 0;}
     margin-top: 10px;
 }
 
+
 .btn {
-  border: unset;
-  border-radius: 0 20px 0 20px;
-  background-color: $secondary;
-  color: white;
-  padding: 5px 10px 5px 10px;
-  cursor: pointer;
-  font-size: 20px;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    border: 2px solid $primary;
+    border-radius: 0.6em;
+    cursor: pointer;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-self: center;
+        -ms-flex-item-align: center;
+            align-self: center;
+    padding: 10px 25px 10px 25px;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: $black;
+    box-shadow: 0 0 40px 40px $primary inset, 0 0 0 0 $primary;
+    -webkit-transition: all 150ms ease-in-out;
+    transition: all 150ms ease-in-out;
 
-  &:hover {
-      background-color: $primary;
+    &.secondary {
+        border: 2px solid $secondary;
+        box-shadow: 0 0 40px 40px $secondary inset, 0 0 0 0 $secondary;
+    }
+
+    &.accent {
+        border: 2px solid $accent;
+        box-shadow: 0 0 40px 40px $accent inset, 0 0 0 0 $accent;
+    }
+
+    &.warn {
+        border: 2px solid $warn;
+        box-shadow: 0 0 40px 40px $warn inset, 0 0 0 0 $warn;
+    }
+
+    &.error {
+        border: 2px solid $error;
+        box-shadow: 0 0 40px 40px $error inset, 0 0 0 0 $error;
+    }
+  }
+  .btn:hover, .btn:focus {
+    outline: 0;
+    background-color: transparent;
+    color: $white;
+    box-shadow: 0 0 10px 0 $primary inset, 0 0 10px 4px $primary;
+
+    &.secondary {
+        box-shadow: 0 0 10px 0 $secondary inset, 0 0 10px 4px $secondary;
+    }
+
+    &.accent {
+        box-shadow: 0 0 10px 0 $accent inset, 0 0 10px 4px $accent;
+    }
+
+    &.warn {
+        box-shadow: 0 0 10px 0 $warn inset, 0 0 10px 4px $warn;
+    }
+
+    &.error {
+        box-shadow: 0 0 10px 0 $error inset, 0 0 10px 4px $error;
+    }
   }
 
-  &:focus {
-      outline: none;
-  }
-}
 
 .dark-background {
     background-color: $black;
 }
-

@@ -7,8 +7,8 @@
 >
    <div style="position: absolute; top: 10px; left: 10px;">{{ offset ? offset.width + ' ' + offset.height : 'none' }}</div>
     <button
-        *ngIf="this.offset"
-        class="btn"
+        *ngIf="this.offset && !isDragging"
+        class="btn accent"
         style="
             position: absolute;
             right: 50%;
@@ -16,14 +16,16 @@
             width: 100px;
             z-index: 2;
         "
-        (click)="$event.stopPropagation(); select();"
+        (click)="select();"
+        (mousedown)="$event.stopPropagation()"
     >
         Select
     </button>
     <button
         style="position: absolute; right: 10px; top: 10px; z-index: 2"
-        class="btn"
-        (click)="$event.stopPropagation(); cancel();"
+        class="btn error"
+        (click)="cancel();"
+        (mousedown)="$event.stopPropagation()"
     >
         cancel
     </button>

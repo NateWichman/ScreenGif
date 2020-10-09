@@ -34,7 +34,6 @@ export class OverlayComponent implements OnInit {
     }
 
     onMouseDown(event: MouseEvent) {
-        if (this.offset) return;
         this.isDragging = true;
         this.offset = {
             x: event.clientX,
@@ -52,7 +51,6 @@ export class OverlayComponent implements OnInit {
     }
 
     onMouseUp(event: MouseEvent) {
-        alert(window.innerWidth);
         this.isDragging = false;
     }
 
