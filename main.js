@@ -41,13 +41,15 @@ app.on('activate', function () {
 
 ipc.on('getMainScreenId', (event) => {
     event.sender.send('mainScreenId', electron.screen.getPrimaryDisplay().id);
-})
+});
 
 /** Select Overlay ***********************************************************************************/
 let overlayWindow;
 let selectedScreen;
 ipc.on('openOverlay', (event, screenId) => {
-    selectedScreen = electron.screen.getAllDisplays().find(x => x.id.toString() === screenId);
+    selectedScreen = electron.screen
+        .getAllDisplays()
+        .find((x) => x.id.toString() === screenId);
     overlayWindow = new BrowserWindow({
         fullscreen: true,
         movable: false,
@@ -97,10 +99,10 @@ ipc.on('recordOverlay', (event) => {
         webPreferences: {
             nodeIntegration: true
         }
-    })
+    });
     overlayWindow.setAlwaysOnTop(true, 'pop-up-menu');
     /* TODO: If allowing more than one screen, must change */
-   // const bounds = electron.screen.getAllDisplays().find(s => s.id === selectedScreen.id).bounds;
+    // const bounds = electron.screen.getAllDisplays().find(s => s.id === selectedScreen.id).bounds;
     const bounds = electron.screen.getPrimaryDisplay().bounds;
     recordOverlayWindow.setPosition(bounds.x + bounds.width - 100, bounds.y);
     recordOverlayWindow.loadURL(
@@ -122,7 +124,7 @@ ipc.on('endRecording', (event) => {
     mainWindow.webContents.send('stopRecording');
     recordOverlayWindow.close();
     overlayWindow.close();
-})
+});
 
 /** GIF & Video LOGIC ********************************************************************************* */
 const ffmpeg = require('fluent-ffmpeg');
@@ -136,8 +138,8 @@ const ffprobePath = require('ffprobe-static').path.replace(
 );
 ffmpeg.setFfmpegPath(ffmpegPath);
 ffmpeg.setFfprobePath(ffprobePath);
-/** File Saving */
-ipc.on('saveFile', async function (event, blob) {
+
+ipc.on('saveFile', async function (event, blob, exportOptions) {
     const { filePath } = await dialog.showSaveDialog({
         buttonLabel: 'Save Video',
         defaultPath: `vid-${Date.now()}.webm`
@@ -145,12 +147,17 @@ ipc.on('saveFile', async function (event, blob) {
     if (filePath) {
         await fs.writeFile(filePath, blob, () => console.log('complete'));
 
-        const outputPath = filePath.replace('webm', 'gif');
-        console.log('\x1b[36m%s\x1b[0m', 'OUTPUT PATHHHH', outputPath);
+        if (exportOptions.gif) {
+            const outputPath = filePath.replace('webm', 'gif');
+            console.log('\x1b[36m%s\x1b[0m', 'OUTPUT PATHHHH', outputPath);
 
-        ffmpeg(filePath)
-            .outputOption('-vf', 'fps=20')
-            .save(outputPath);
+            ffmpeg(filePath).outputOption('-vf', 'fps=20').save(outputPath);
+        }
+
+        if (!exportOptions.video) {
+            await fs.unlink(filePath);
+        }
     }
-});
 
+    event.sender.send('saved');
+});

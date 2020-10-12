@@ -76,3 +76,21 @@
     margin-left: 10px;
     margin-right: 10px;
 }
+
+
+.saved-bar {
+  padding: 10px;
+  width: 300px;
+  font-size: medium;
+  font-weight: bold;
+  border-radius: 30px;
+  text-align: center;
+  border: 2px solid $black;
+  margin-top: 25px;
+  background-color: $accent;
+  color: $black;
+}
+
+button {
+  width: 100%;
+}

@@ -21,6 +21,7 @@ export class EditorComponent implements AfterViewInit {
     @Input() record: any;
     @Output() cancel = new EventEmitter<boolean>();
     videoUrl;
+    fileIsSaved = false;
 
     exportOptions = {
         video: true,
@@ -48,8 +49,20 @@ export class EditorComponent implements AfterViewInit {
         this.cancel.emit(true);
     }
 
+    showFileSavedIndicator() {
+        this.fileIsSaved = true;
+        this.cd.detectChanges();
+        setTimeout(() => {
+            this.fileIsSaved = false;
+            this.cd.detectChanges();
+        }, 1000);
+    }
+
     async save() {
         const buffer = Buffer.from(await this.record.arrayBuffer());
-        this.eS.ipcRenderer.send('saveFile', buffer);
+        this.eS.ipcRenderer.send('saveFile', buffer, this.exportOptions);
+        this.eS.ipcRenderer.once('saved', (event) => {
+            this.showFileSavedIndicator();
+        });
     }
 }
