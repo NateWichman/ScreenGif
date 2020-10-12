@@ -55,7 +55,7 @@ export class RecorderComponent implements OnInit {
     ngOnInit() {
         this.fetchSources();
         const { height, width } = this.resolution;
-        this.eS.ipcRenderer.on('clip', (event, clip) => {
+        this.eS.ipcRenderer.once('clip', (event, clip) => {
             console.log('clip received');
             this.offset = clip;
             this.canvas = {
@@ -65,15 +65,17 @@ export class RecorderComponent implements OnInit {
             this.cd.detectChanges();
         });
 
-        this.eS.ipcRenderer.on('startRecording', (event) => {
+        this.eS.ipcRenderer.once('startRecording', (event) => {
             this.toggleRecording();
+            this.cd.detectChanges();
         });
 
-        this.eS.ipcRenderer.on('stopRecording', (event) => {
+        this.eS.ipcRenderer.once('stopRecording', (event) => {
             this.toggleRecording();
+            this.cd.detectChanges();
         });
 
-        this.eS.ipcRenderer.on('overlayCancel', (event) => {
+        this.eS.ipcRenderer.once('overlayCancel', (event) => {
             this.isOverlaying = false;
             this.cd.detectChanges();
         });
@@ -137,7 +139,7 @@ export class RecorderComponent implements OnInit {
     private async fetchSources() {
         const mainScreenId = await new Promise((resolve) => {
             this.eS.ipcRenderer.send('getMainScreenId');
-            this.eS.ipcRenderer.on('mainScreenId', (event, id) => {
+            this.eS.ipcRenderer.once('mainScreenId', (event, id) => {
                 resolve(id);
             });
         });

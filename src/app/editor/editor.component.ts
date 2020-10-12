@@ -49,7 +49,6 @@ export class EditorComponent implements AfterViewInit {
     }
 
     async save() {
-        console.log(this.exportOptions);
         const buffer = Buffer.from(await this.record.arrayBuffer());
         this.eS.ipcRenderer.send('saveFile', buffer);
     }
