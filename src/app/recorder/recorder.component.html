@@ -1,6 +1,9 @@
 <div class="d-flex d-col a-center">
-    <h1>Screen to Gif 🦐</h1>
-    <div *ngIf="!isOverlaying" class="d-flex j-between">
+    <div
+        *ngIf="!isOverlaying"
+        class="d-flex j-between"
+        style="width: 100%; max-width: 700px"
+    >
         <select
             style="width: 150px"
             (ngModelChange)="selectSource($event)"
@@ -10,10 +13,12 @@
                 {{ source.name }}
             </option>
         </select>
-        <button class="btn" (click)="openOverlay()">Select Area</button>
+        <button class="btn accent" (click)="openOverlay()">Select Area</button>
     </div>
 
-    <h2>Preview</h2>
+    <div *ngIf="isHelpText">Look for the record button in the upper right of your main display</div>
+
+    <h2 sty="margin-right: auto">preview</h2>
     <div class="preview">
         <video
             *ngIf="!canvas"

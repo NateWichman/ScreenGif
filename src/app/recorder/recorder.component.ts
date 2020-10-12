@@ -5,7 +5,8 @@ import {
     ElementRef,
     Output,
     EventEmitter,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    OnDestroy
 } from '@angular/core';
 import { DesktopCapturerSource } from 'electron';
 import { ElectronService } from 'ngx-electron';
@@ -19,7 +20,7 @@ declare var Blob: any;
     templateUrl: './recorder.component.html',
     styleUrls: ['./recorder.component.scss']
 })
-export class RecorderComponent implements OnInit {
+export class RecorderComponent implements OnInit, OnDestroy {
     @Output() recordingEmitter = new EventEmitter<Blob>();
     @ViewChild('vid') videoEl: ElementRef;
     @ViewChild('canv') canvasEl: ElementRef;
@@ -33,6 +34,7 @@ export class RecorderComponent implements OnInit {
     selectedSource: DesktopCapturerSource;
     isRecording = false;
     isOverlaying = false;
+    isHelpText = false;
     private mediaRecorder: any;
     private recordedChunks = [];
     private i; // interval
@@ -54,6 +56,16 @@ export class RecorderComponent implements OnInit {
 
     ngOnInit() {
         this.fetchSources();
+    }
+
+    ngOnDestroy() {
+        this.rL(['overlayCancel']);
+    }
+
+    openOverlay() {
+        this.isOverlaying = true;
+        this.eS.ipcRenderer.send('openOverlay', this.selectedSource.display_id);
+
         const { height, width } = this.resolution;
         this.eS.ipcRenderer.once('clip', (event, clip) => {
             console.log('clip received');
@@ -72,18 +84,26 @@ export class RecorderComponent implements OnInit {
 
         this.eS.ipcRenderer.once('stopRecording', (event) => {
             this.toggleRecording();
+            this.isHelpText = false;
+            this.cd.detectChanges();
+        });
+
+        this.eS.ipcRenderer.once('showHelpText', (event) => {
+            this.isHelpText = true;
             this.cd.detectChanges();
         });
 
         this.eS.ipcRenderer.once('overlayCancel', (event) => {
             this.isOverlaying = false;
+            this.isHelpText = false;
             this.cd.detectChanges();
+            this.rL(['startRecording', 'showHelpText', 'stopRecording']);
         });
+
     }
 
-    openOverlay() {
-        this.isOverlaying = true;
-        this.eS.ipcRenderer.send('openOverlay', this.selectedSource.display_id);
+    rL(listeners: string[]) {
+        listeners.forEach((l) => this.eS.ipcRenderer.removeAllListeners(l));
     }
 
     toggleRecording() {
@@ -147,7 +167,9 @@ export class RecorderComponent implements OnInit {
             types: ['screen']
         });
         this.sources = inputSources;
-        const source = this.sources.find(s => s.display_id === mainScreenId.toString());
+        const source = this.sources.find(
+            (s) => s.display_id === mainScreenId.toString()
+        );
         this.selectSource(source);
         this.cd.detectChanges();
     }

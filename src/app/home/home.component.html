@@ -1,2 +1,8 @@
-<app-recorder *ngIf="!record" (recordingEmitter)="onRecorded($event)"></app-recorder>
+<div style="width: 100%; text-align: center">
+    <h1>Screen to Gif / Video</h1>
+</div>
+<app-recorder
+    *ngIf="!record"
+    (recordingEmitter)="onRecorded($event)"
+></app-recorder>
 <app-editor *ngIf="record" [record]="record" (cancel)="reset()"></app-editor>
