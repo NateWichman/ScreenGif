@@ -17,12 +17,12 @@
 }
 
 .selection-box {
-    outline: 5px dashed $black;
+    outline: 3px dashed $black;
     position: absolute;
     box-shadow: 0 0 0 9999px rgba($warn, 0.3);
 
     &.click-through {
-        outline: 5px dashed $primary;
+        outline: 3px dashed $accent;
         box-shadow: unset;
     }
 }
@@ -31,7 +31,8 @@
     position: absolute;
     right: 50%;
     transform: translateX(50%);
-    width: 100px;
+    width: 200px;
+    top: 10px;
     z-index: 2;
 }
 

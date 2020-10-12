@@ -64,8 +64,6 @@ body {
     font-size: 15px;
     color: $black;
     box-shadow: 0 0 40px 40px $primary inset, 0 0 0 0 $primary;
-    -webkit-transition: all 150ms ease-in-out;
-    transition: all 150ms ease-in-out;
 
     &.secondary {
         border: 2px solid $secondary;
@@ -85,6 +83,17 @@ body {
     &.error {
         border: 2px solid $error;
         box-shadow: 0 0 40px 40px $error inset, 0 0 0 0 $error;
+    }
+
+    &.error-dark {
+        border: 2px solid $error-dark;
+        box-shadow: 0 0 40px 40px $error-dark inset, 0 0 0 0 $error-dark;
+        color: $white;
+    }
+    &.primary-dark {
+        border: 2px solid $primary-dark;
+        color: $white;
+        box-shadow: 0 0 40px 40px $primary-dark inset, 0 0 0 0 $primary-dark;
     }
   }
   .btn:hover, .btn:focus {
@@ -108,9 +117,17 @@ body {
     &.error {
         box-shadow: 0 0 10px 0 $error inset, 0 0 10px 4px $error;
     }
+    &.error-dark {
+        box-shadow: 0 0 10px 0 $error-dark inset, 0 0 10px 4px $error-dark;
+        color: $black;
+    }
+    &.primary-dark {
+        box-shadow: 0 0 10px 0 $primary-dark inset, 0 0 10px 4px $primary-dark;
+        color: $black;
+    }
   }
 
 
 .dark-background {
-    background-color: $black;
+    background-color: #121212;
 }

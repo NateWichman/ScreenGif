@@ -1,16 +1,25 @@
-<div class="d-flex d-col a-center">
-    <div style="display: inline-block">
-        <div class="d-flex a-center j-between mt-1" style="width: 500px;">
+<div class="d-flex d-col a-center" style="margin-top: 50px;">
+    <div class="d-flex">
+        <div style="padding: 10px">
             <button (click)="save()" class="btn accent">Save</button>
-            <label class="container">video
-                <input type="checkbox" />
-                <span class="checkmark"></span>
-            </label>
-            <label class="container">gif
-                <input type="checkbox" />
-                <span class="checkmark"></span>
-            </label>
+
+            <div class="mt-1" style="font-size: medium">export to:</div>
+            <div style="margin-left: 10px">
+                <label class="container"
+                    >video
+                    <input type="checkbox" />
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container"
+                    >gif
+                    <input type="checkbox" />
+                    <span class="checkmark"></span>
+                </label>
+            </div>
         </div>
-        <video #vid loop></video>
+
+        <div class="divider-line"></div>
+
+        <video #vid loop style="width: 100%; max-width: 700px"></video>
     </div>
 </div>

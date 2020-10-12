@@ -23,7 +23,7 @@ function createWindow() {
         })
     );
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.on('closed', function () {
         mainWindow = null;
@@ -69,6 +69,7 @@ ipc.on('openOverlay', (event) => {
 
 ipc.on('cancelOverlay', (event) => {
     overlayWindow.close();
+    mainWindow.webContents.send('overlayCancel');
 });
 
 ipc.on('selectOverlay', (event, clipPercents) => {
