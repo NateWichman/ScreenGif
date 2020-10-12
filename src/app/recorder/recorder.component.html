@@ -3,8 +3,8 @@
     <div *ngIf="!isOverlaying" class="d-flex j-between">
         <select
             style="width: 150px"
-            (ngModelChange)="selectSource()"
-            [(ngModel)]="selectedSource"
+            (ngModelChange)="selectSource($event)"
+            [ngModel]="selectedSource"
         >
             <option *ngFor="let source of sources" [ngValue]="source">
                 {{ source.name }}

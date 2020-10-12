@@ -1,21 +1,41 @@
-<div class="d-flex d-col a-center" style="margin-top: 50px;">
+<div class="d-flex d-col a-center" style="margin-top: 50px">
     <div class="d-flex">
         <div style="padding: 10px">
-            <button (click)="save()" class="btn accent">Save</button>
+            <button
+                [attr.disabled]="
+                    !exportOptions.video && !exportOptions.gif ? true : null
+                "
+                (click)="save()"
+                class="btn accent"
+            >
+                Save
+            </button>
 
             <div class="mt-1" style="font-size: medium">export to:</div>
-            <div style="margin-left: 10px">
+            <div class="mt-1" style="margin-left: 10px">
                 <label class="container"
                     >video
-                    <input type="checkbox" />
+                    <input
+                        type="checkbox"
+                        (ngModelChange)="detect()"
+                        [(ngModel)]="exportOptions.video"
+                    />
                     <span class="checkmark"></span>
                 </label>
                 <label class="container"
                     >gif
-                    <input type="checkbox" />
+                    <input
+                        type="checkbox"
+                        (ngModelChange)="detect()"
+                        [(ngModel)]="exportOptions.gif"
+                    />
                     <span class="checkmark"></span>
                 </label>
             </div>
+
+            <button (click)="onCancel()" class="btn warn mt-1">
+                cancel
+            </button>
         </div>
 
         <div class="divider-line"></div>

@@ -43,12 +43,9 @@ body {
     margin-top: 10px;
 }
 
-
 .btn {
     box-sizing: border-box;
-    -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
+    appearance: none;
     border: 2px solid $primary;
     border-radius: 0.6em;
     cursor: pointer;
@@ -95,38 +92,47 @@ body {
         color: $white;
         box-shadow: 0 0 40px 40px $primary-dark inset, 0 0 0 0 $primary-dark;
     }
-  }
-  .btn:hover, .btn:focus {
-    outline: 0;
-    background-color: transparent;
-    color: $white;
-    box-shadow: 0 0 10px 0 $primary inset, 0 0 10px 4px $primary;
+}
+.btn:hover,
+.btn:focus {
+    &:not([disabled]) {
+        outline: 0;
+        background-color: transparent;
+        color: $white;
+        box-shadow: 0 0 10px 0 $primary inset, 0 0 10px 4px $primary;
 
-    &.secondary {
-        box-shadow: 0 0 10px 0 $secondary inset, 0 0 10px 4px $secondary;
-    }
+        &.secondary {
+            box-shadow: 0 0 10px 0 $secondary inset, 0 0 10px 4px $secondary;
+        }
 
-    &.accent {
-        box-shadow: 0 0 10px 0 $accent inset, 0 0 10px 4px $accent;
-    }
+        &.accent {
+            box-shadow: 0 0 10px 0 $accent inset, 0 0 10px 4px $accent;
+        }
 
-    &.warn {
-        box-shadow: 0 0 10px 0 $warn inset, 0 0 10px 4px $warn;
-    }
+        &.warn {
+            box-shadow: 0 0 10px 0 $warn inset, 0 0 10px 4px $warn;
+        }
 
-    &.error {
-        box-shadow: 0 0 10px 0 $error inset, 0 0 10px 4px $error;
+        &.error {
+            box-shadow: 0 0 10px 0 $error inset, 0 0 10px 4px $error;
+        }
+        &.error-dark {
+            box-shadow: 0 0 10px 0 $error-dark inset, 0 0 10px 4px $error-dark;
+            color: $black;
+        }
+        &.primary-dark {
+            box-shadow: 0 0 10px 0 $primary-dark inset,
+                0 0 10px 4px $primary-dark;
+            color: $black;
+        }
     }
-    &.error-dark {
-        box-shadow: 0 0 10px 0 $error-dark inset, 0 0 10px 4px $error-dark;
-        color: $black;
-    }
-    &.primary-dark {
-        box-shadow: 0 0 10px 0 $primary-dark inset, 0 0 10px 4px $primary-dark;
-        color: $black;
-    }
-  }
+}
 
+button[disabled] {
+    background-color: rgba($primary, 0.5) !important;
+    box-shadow: unset !important;
+    border: 2px rgba($primary, 0.5) solid !important;
+}
 
 .dark-background {
     background-color: #121212;

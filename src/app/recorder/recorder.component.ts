@@ -81,7 +81,7 @@ export class RecorderComponent implements OnInit {
 
     openOverlay() {
         this.isOverlaying = true;
-        this.eS.ipcRenderer.send('openOverlay');
+        this.eS.ipcRenderer.send('openOverlay', this.selectedSource.display_id);
     }
 
     toggleRecording() {
@@ -110,8 +110,6 @@ export class RecorderComponent implements OnInit {
             type: 'video/webm; codecs=vp9'
         });
         this.recordingEmitter.emit(blob);
-        /* const buffer = Buffer.from(await blob.arrayBuffer());
-        this.eS.ipcRenderer.send('saveFile', buffer); */
     }
 
     private startCanvasDisplay() {
@@ -137,17 +135,24 @@ export class RecorderComponent implements OnInit {
 
     /** Shows all available sources for screen recording. */
     private async fetchSources() {
+        const mainScreenId = await new Promise((resolve) => {
+            this.eS.ipcRenderer.send('getMainScreenId');
+            this.eS.ipcRenderer.on('mainScreenId', (event, id) => {
+                resolve(id);
+            });
+        });
         const inputSources = await this.eS.desktopCapturer.getSources({
-            types: ['window', 'screen']
+            types: ['screen']
         });
         this.sources = inputSources;
-        if (this.sources.length > 0) {
-            this.selectedSource = this.sources[0];
-            this.selectSource();
-        }
+        const source = this.sources.find(s => s.display_id === mainScreenId.toString());
+        this.selectSource(source);
+        this.cd.detectChanges();
     }
 
-    async selectSource() {
+    async selectSource(source) {
+        this.selectedSource = source;
+        this.cd.detectChanges();
         this.videoEl.nativeElement.innerText = this.selectedSource.name;
 
         const { height, width } = this.resolution;

@@ -14,7 +14,6 @@ function createWindow() {
             nodeIntegration: true
         }
     });
-
     mainWindow.loadURL(
         url.format({
             pathname: path.join(__dirname, `/dist/ScreenGif/index.html`),
@@ -39,10 +38,15 @@ app.on('activate', function () {
     if (mainWindow === null) createWindow();
 });
 
+ipc.on('getMainScreenId', (event) => {
+    event.sender.send('mainScreenId', electron.screen.getPrimaryDisplay().id);
+})
+
 /** Select Overlay ***********************************************************************************/
 let overlayWindow;
-ipc.on('openOverlay', (event) => {
-    console.log('overlay opened');
+let selectedScreen;
+ipc.on('openOverlay', (event, screenId) => {
+    selectedScreen = electron.screen.getAllDisplays().find(x => x.id.toString() === screenId);
     overlayWindow = new BrowserWindow({
         fullscreen: true,
         movable: false,
@@ -51,7 +55,9 @@ ipc.on('openOverlay', (event) => {
         resizable: false,
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+        x: selectedScreen.bounds.x,
+        y: selectedScreen.bounds.y
     });
 
     overlayWindow.setAlwaysOnTop(true, 'pop-up-menu');
@@ -93,6 +99,7 @@ ipc.on('recordOverlay', (event) => {
     })
     overlayWindow.setAlwaysOnTop(true, 'pop-up-menu');
     /* TODO: If allowing more than one screen, must change */
+   // const bounds = electron.screen.getAllDisplays().find(s => s.id === selectedScreen.id).bounds;
     const bounds = electron.screen.getPrimaryDisplay().bounds;
     recordOverlayWindow.setPosition(bounds.x + bounds.width - 100, bounds.y);
     recordOverlayWindow.loadURL(

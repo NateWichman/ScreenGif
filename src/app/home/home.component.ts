@@ -20,4 +20,10 @@ export class HomeComponent implements OnInit {
         this.record = blob;
         this.cd.detectChanges();
     }
+
+    reset() {
+        this.record = null;
+        this.showRecord = false;
+        this.cd.detectChanges();
+    }
 }
