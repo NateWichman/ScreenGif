@@ -24,8 +24,9 @@ function createWindow() {
     // Open the DevTools.
     // mainWindow.webContents.openDevTools();
 
-    mainWindow.on('closed', function () {
+    mainWindow.on('closed', () => {
         mainWindow = null;
+        app.quit();
     });
 }
 app.on('ready', createWindow);
