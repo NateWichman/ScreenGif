@@ -1,4 +1,7 @@
-<div class="record d-flex j-center a-center" [ngClass]="isRecording ? 'recording' : 'waiting'">
+<div
+    class="record d-flex j-center a-center"
+    [ngClass]="isRecording ? 'recording' : 'waiting'"
+>
     <button
         *ngIf="!isRecording"
         style="width: 70%; height: 70%"
